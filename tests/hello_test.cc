@@ -5,5 +5,6 @@
 TEST(HelloTest, BasicAssertions) {
     // Can print hello world
     char helloWorld[] = "Hello, World!\n";
-    EXPECT_STRCASEEQ("hello world", println(helloWorld));
+    char *then = println(helloWorld);
+    ASSERT_TRUE(strcmp("hello world", then));
 }
