@@ -1,10 +1,30 @@
 #include <gtest/gtest.h>
 #include "hello_test.h"
 
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
-    // Can print hello world
-    char helloWorld[] = "hello world";
+TEST(CreateTableWithId, BasicAssertions) {
+    char helloWorld[] = "CREATE TABLE default (ID int);";
+
     char* expect = println(helloWorld);
-    EXPECT_STREQ("hello world", expect);
+
+    EXPECT_STREQ("success", expect);
+}
+TEST(SelectRetrievesColumnLabel, BasicAssertions) {
+    char createTable[] = "CREATE TABLE default (ID int);";
+    println(createTable);
+    char select[] = "SELECT * FROM default;";
+
+    char* expect = println(select);
+
+    EXPECT_STREQ("table\nID", expect);
+}
+TEST(InsertIntoStoresData, BasicAssertions) {
+    char createTable[] = "CREATE TABLE default (ID int);";
+    println(createTable);
+    char insertInto[] = "INSERT INTO default VALUES (1);";
+    println(insertInto);
+    char select[] = "SELECT * FROM default;";
+
+    char* expect = println(select);
+
+    EXPECT_STREQ("table\nID\n1", expect);
 }
