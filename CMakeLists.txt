@@ -17,16 +17,16 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 add_library(
         print_ln
-        println.c
-        println.h
+        src/println.c
+        src/println.h
 )
 add_executable(
         main
-        main.c
+        src/main.c
 )
 add_executable(
         hello_test
-        hello_test.cc
+        tests/hello_test.cc
 )
 target_link_libraries(
         main
