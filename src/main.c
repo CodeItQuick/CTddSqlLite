@@ -4,7 +4,7 @@
 int main() {
     char helloWorld[] = "Hello, World!\n";
     struct ParserSelf* self;
-    println(self, helloWorld);
+    parse(self, helloWorld);
     return 0;
 }
 

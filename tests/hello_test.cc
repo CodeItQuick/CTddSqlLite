@@ -5,7 +5,7 @@
 TEST(CreateTableWithId, BasicAssertions) {
     std::string createTableStatement = "CREATE TABLE default (ID int);";
     struct ParserSelf self = { "", "", 0 };
-    int expect = println(&self, createTableStatement.c_str());
+    int expect = parse(&self, createTableStatement.c_str());
 
     EXPECT_EQ(0, expect);
 }
@@ -29,29 +29,29 @@ TEST(CanRetrieveColumnLabelId, BasicAssertions) {
 TEST(CreateTableWithAge, BasicAssertions) {
     char helloWorld[] = "CREATE TABLE default (Age int);";
     struct ParserSelf self = { "", "", 0 };
-    int expect = println(&self, helloWorld);
+    int expect = parse(&self, helloWorld);
 
     EXPECT_EQ(0, expect);
 }
 TEST(SelectRetrievesColumnLabel, BasicAssertions) {
     char createTable[] = "CREATE TABLE default (ID int);";
     struct ParserSelf self = { "", "", 0 };
-    println(&self, createTable);
+    parse(&self, createTable);
     char select[] = "SELECT * FROM default;";
 
-    println(&self, select);
+    parse(&self, select);
 
     EXPECT_STREQ("table\nID", self.results);
 }
 TEST(InsertIntoStoresData, BasicAssertions) {
     char createTable[] = "CREATE TABLE default (ID int);";
     struct ParserSelf self = { "", "", 0 };
-    println(&self, createTable);
+    parse(&self, createTable);
     char insertInto[] = "INSERT INTO default VALUES (1);";
-    println(&self, insertInto);
+    parse(&self, insertInto);
     char select[] = "SELECT * FROM default;";
 
-    println(&self, select);
+    parse(&self, select);
 
     EXPECT_STREQ("table\nID\n1", self.results);
 }

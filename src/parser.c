@@ -39,7 +39,7 @@ int findColumnLabel(const char* inputString, char* columnLabel)
             columnLabel);
     return 0;
 }
-int println(struct ParserSelf* self, const char* printedString) {
+int parse(struct ParserSelf* self, const char* printedString) {
     printf("got here");
     char printedSubstring[50] = "";
     if (strlen(printedString) > 11) {
