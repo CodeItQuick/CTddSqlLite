@@ -27,13 +27,13 @@ int findString(int pos, const char charStr, const char searchString[])
 
     return pos + c;
 }
-int findColumnLabel(const char* inputString, char* columnLabel)
+int findColumnLabel(char* self, const char* inputString)
 {
     int startIdx = findString(0, '(', inputString) + 1;
     int endIdx = findString(startIdx, ' ', inputString);
 
     substring(
-            columnLabel,
+            self,
             endIdx - startIdx,
             inputString,
             startIdx);
@@ -48,7 +48,7 @@ int parse(struct ParserSelf* self, const char* printedString) {
     printf("got here");
     if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "CREATE TABLE") == 0) {
         char columnLabel[50] = "";
-        findColumnLabel(printedString, columnLabel);
+        findColumnLabel(columnLabel, printedString);
         printf("Table Tabling: %s end", columnLabel);
         strcpy(self->columnHeader, &columnLabel[0]); // store this as columnHeader
         return 0;

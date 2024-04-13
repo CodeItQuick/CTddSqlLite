@@ -13,7 +13,7 @@ TEST(CanRetrieveColumnLabel, BasicAssertions) {
     std::string createTableStatement = "CREATE TABLE default (Age int);";
 
     char columnLabel[50] = "";
-    findColumnLabel(createTableStatement.c_str(), columnLabel);
+    findColumnLabel(columnLabel, createTableStatement.c_str());
 
     EXPECT_STREQ("Age", columnLabel);
 }
@@ -21,7 +21,7 @@ TEST(CanRetrieveColumnLabelId, BasicAssertions) {
     std::string createTableStatement = "CREATE TABLE default (ID int);";
 
     char columnLabel[50] = "";
-    findColumnLabel(createTableStatement.c_str(), columnLabel);
+    findColumnLabel(columnLabel, createTableStatement.c_str());
 
     EXPECT_STREQ("ID", columnLabel);
 }
