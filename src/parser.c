@@ -3,20 +3,18 @@
 //
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
 #include "parser.h"
 
 static char results[10] = {0};
 static char *columnHeader;
 static int columnValue = 0;
-char *substring(int len, const char fullString[], int pos)
+int substring(int len, const char fullString[], int pos, char* substr)
 {
-    char* substr = malloc((sizeof(char)) * (len + 1));
     strncpy(substr, &fullString[pos], len);
 
     substr[len] = '\0';
 
-    return substr;
+    return 0;
 }
 int findString(int pos, const char charStr, const char searchString[])
 {
@@ -32,29 +30,30 @@ int findString(int pos, const char charStr, const char searchString[])
 
     return pos + c;
 }
-char* findColumnLabel(const char* inputString)
+int findColumnLabel(const char* inputString, char* columnLabel)
 {
     int startIdx = findString(0, '(', inputString) + 1;
     int endIdx = findString(startIdx, ' ', inputString);
 
-    char* columnLabel = substring(
+    substring(
             endIdx - startIdx,
             inputString,
-            startIdx);
-    return columnLabel;
+            startIdx,
+            columnLabel);
+    return 0;
 }
 char * println(const char* printedString) {
     printf("got here");
-    char *printedSubstring;
+    char printedSubstring[50] = "";
     if (strlen(printedString) > 11) {
-        printedSubstring = substring(12, printedString, 0);
+        substring(12, printedString, 0, printedSubstring);
     }
     printf("got here");
     if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "CREATE TABLE") == 0) {
-        char* columnLabel = findColumnLabel(printedString);
+        char columnLabel[50] = "";
+        findColumnLabel(printedString, columnLabel);
         printf("Table Tabling: %s end", columnLabel);
-        columnHeader = columnLabel; // store this as columnHeader
-        free(columnLabel);
+        columnHeader = &columnLabel[0]; // store this as columnHeader
         return "success";
     }
     printf("and here");

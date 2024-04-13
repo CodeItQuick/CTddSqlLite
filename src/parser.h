@@ -4,7 +4,7 @@
 
 #pragma once
 
-char * substring(int len, const char* string, int pos);
+int substring(int len, const char* string, int pos, char* substr);
 int findString(int pos, const char charStr, const char* searchString);
-char* findColumnLabel(const char* inputString);
+int findColumnLabel(const char* inputString, char* columnLabel);
 char * println(const char* printedString);
