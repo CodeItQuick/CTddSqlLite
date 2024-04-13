@@ -5,7 +5,7 @@
 #include <string.h>
 #include "parser.h"
 
-int substring(int len, const char fullString[], int pos, char* substr)
+int substring(char* substr, int len, const char fullString[], int pos)
 {
     strncpy(substr, &fullString[pos], len);
 
@@ -33,17 +33,17 @@ int findColumnLabel(const char* inputString, char* columnLabel)
     int endIdx = findString(startIdx, ' ', inputString);
 
     substring(
+            columnLabel,
             endIdx - startIdx,
             inputString,
-            startIdx,
-            columnLabel);
+            startIdx);
     return 0;
 }
 int parse(struct ParserSelf* self, const char* printedString) {
     printf("got here");
     char printedSubstring[50] = "";
     if (strlen(printedString) > 11) {
-        substring(12, printedString, 0, printedSubstring);
+        substring(printedSubstring, 12, printedString, 0);
     }
     printf("got here");
     if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "CREATE TABLE") == 0) {
