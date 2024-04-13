@@ -10,7 +10,6 @@ struct ParserSelf {
     int columnValue;
 };
 
-int substring(char* substr, int len, const char* string, int pos);
 int findString(int pos, const char charStr, const char* searchString);
 int findColumnLabel(char* self, const char* inputString);
 int parse(struct ParserSelf* self, const char* printedString);

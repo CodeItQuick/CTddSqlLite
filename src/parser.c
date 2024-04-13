@@ -5,15 +5,6 @@
 #include <string.h>
 #include "parser.h"
 
-
-int substring(char* substr, int len, const char fullString[], int pos)
-{
-    strncpy(substr, &fullString[pos], len);
-
-    substr[len] = '\0';
-
-    return 0;
-}
 int findString(int pos, const char charStr, const char searchString[])
 {
     int c = 0;
@@ -42,7 +33,8 @@ int findColumnLabel(char* self, const char* inputString)
 int parse(struct ParserSelf* self, const char* printedString) {
     char printedSubstring[50] = "";
     if (strlen(printedString) > 11) {
-        substring(printedSubstring, 12, printedString, 0);
+        strncpy(printedSubstring, &printedString[0], 12);
+        printedSubstring[12] = '\0';
     }
     if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "CREATE TABLE") == 0) {
         char columnLabel[50] = "";
