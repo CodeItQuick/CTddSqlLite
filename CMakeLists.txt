@@ -17,8 +17,8 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 add_library(
         print_ln
-        src/println.c
-        src/println.h
+        src/parser.c
+        src/parser.h
 )
 add_executable(
         main

@@ -1,8 +1,31 @@
 #include <gtest/gtest.h>
 #include "hello_test.h"
+#include <string>
 
 TEST(CreateTableWithId, BasicAssertions) {
-    char helloWorld[] = "CREATE TABLE default (ID int);";
+    std::string createTableStatement = "CREATE TABLE default (ID int);";
+
+    char* expect = println(createTableStatement.c_str());
+
+    EXPECT_STREQ("success", expect);
+}
+TEST(CanRetrieveColumnLabel, BasicAssertions) {
+    std::string createTableStatement = "CREATE TABLE default (Age int);";
+
+    char* columnLabel = findColumnLabel(createTableStatement.c_str());
+
+    EXPECT_STREQ("Age", columnLabel);
+}
+TEST(CanRetrieveColumnLabelId, BasicAssertions) {
+    std::string createTableStatement = "CREATE TABLE default (ID int);";
+
+    char* columnLabel = findColumnLabel(createTableStatement.c_str());
+
+    EXPECT_STREQ("ID", columnLabel);
+}
+// Not ready for age yet
+TEST(CreateTableWithAge, BasicAssertions) {
+    char helloWorld[] = "CREATE TABLE default (Age int);";
 
     char* expect = println(helloWorld);
 
