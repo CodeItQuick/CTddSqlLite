@@ -3,7 +3,8 @@
 
 int main() {
     char helloWorld[] = "Hello, World!\n";
-    println(helloWorld);
+    struct ParserSelf* self;
+    println(self, helloWorld);
     return 0;
 }
 

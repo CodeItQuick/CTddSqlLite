@@ -5,9 +5,6 @@
 #include <string.h>
 #include "parser.h"
 
-static char results[10] = {0};
-static char *columnHeader;
-static int columnValue = 0;
 int substring(int len, const char fullString[], int pos, char* substr)
 {
     strncpy(substr, &fullString[pos], len);
@@ -42,7 +39,7 @@ int findColumnLabel(const char* inputString, char* columnLabel)
             columnLabel);
     return 0;
 }
-char * println(const char* printedString) {
+int println(struct ParserSelf* self, const char* printedString) {
     printf("got here");
     char printedSubstring[50] = "";
     if (strlen(printedString) > 11) {
@@ -53,19 +50,19 @@ char * println(const char* printedString) {
         char columnLabel[50] = "";
         findColumnLabel(printedString, columnLabel);
         printf("Table Tabling: %s end", columnLabel);
-        columnHeader = &columnLabel[0]; // store this as columnHeader
-        return "success";
+        strcpy(self->columnHeader, &columnLabel[0]); // store this as columnHeader
+        return 0;
     }
     printf("and here");
     if (strcmp(printedString, "INSERT INTO default VALUES (1);") == 0) {
-        columnValue = 1;
-        return "success";
+        self->columnValue = 1;
+        return 0;
     }
     // SELECT
-    if (columnValue == 0) {
-        sprintf(results, "table\n%s", columnHeader);
-        return results; // retrieve columnHeader with SELECT
+    if (self->columnValue == 0) {
+        sprintf(self->results, "table\n%s", self->columnHeader);
+        return 0; // retrieve columnHeader with SELECT
     }
-    sprintf(results, "table\n%s\n%d", columnHeader, columnValue);
-    return results; // retrieve columnHeader with SELECT
+    sprintf(self->results, "table\n%s\n%d", self->columnHeader, self->columnValue);
+    return 0; // retrieve columnHeader with SELECT
 }
