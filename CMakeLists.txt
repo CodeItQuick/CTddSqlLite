@@ -26,7 +26,7 @@ add_executable(
 )
 add_executable(
         hello_test
-        tests/hello_test.cc
+        tests/parser_test.cc
 )
 target_link_libraries(
         main

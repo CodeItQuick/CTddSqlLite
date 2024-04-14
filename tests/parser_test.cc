@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "hello_test.h"
+#include "parser_test.h"
 #include <string>
 
 TEST(CreateTableWithId, BasicAssertions) {
