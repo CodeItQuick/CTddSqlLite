@@ -8,6 +8,8 @@
 
 int numEntriesInStatement(const char *printedString);
 
+void createColumns(const struct ParserSelf *self, const char *printedString);
+
 int findString(int pos, const char charStr, const char searchString[])
 {
     int c = 0;
@@ -47,35 +49,42 @@ int parse(struct ParserSelf* self, const char* printedString) {
         strncpy(printedSubstring, &printedString[0], 12);
         printedSubstring[12] = '\0';
     }
+    // CREATE TABLE
     if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "CREATE TABLE") == 0) {
         // loop to determine number of commas/entries in CREATE TABLE statement
         self->numEntries = numEntriesInStatement(printedString);
 
         // TODO: max of 10 columns, produce error message if more attempted
-        char temp[10][50] = { "", "", "", "", "", "", "", "", "", "" };
-        findColumnLabel(temp, printedString, self->numEntries);
-        for (int i = 0; i < self->numEntries; i++) {
-            printf("columnLabel: %s", temp[i]);
-            strcpy(self->columnHeaders[i], &temp[i][0]); // store this as columnHeader
-        }
+        createColumns(self, printedString);
 
         return 0;
     }
+    // INSERT INTO
     if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "INSERT INTO ") == 0) {
         int startIdx = findString(0, '(', printedString) + 1;
         int endIdx = findString(startIdx, ')', printedString);
 
-        int stringLength = endIdx - startIdx;
-        char insertValue[2] = "";
-        strncpy(insertValue, &printedString[startIdx], stringLength);
-        self->columnValues[0] = atoi(insertValue);
-        printf("value: %d", self->columnValues[0]);
+        // for single entry in VALUES (7)
+        if (self->numEntries == 1) {
+            int stringLength = endIdx - startIdx;
+            char insertValue[5] = "";
+            strncpy(insertValue, &printedString[startIdx], stringLength);
+            self->columnValues[0] = atoi(insertValue);
+        }
+        for (int i = 0; i < self->numEntries; i++) {
+            int commaIdx = findString(0, ',', printedString) + 1;
+            int startToCommaLength = endIdx - startIdx;
+            char insertValue[5] = "";
+            strncpy(insertValue, &printedString[startIdx], startToCommaLength);
+            self->columnValues[i] = atoi(insertValue);
+            startIdx = commaIdx;
+        }
         return 0;
     }
     // SELECT
     sprintf(self->results, "table\n");
     for(int i = 0; i < self->numEntries; i++) {
-        char * currentRow = self->columnHeaders[i];
+        char* currentRow = self->columnHeaders[i];
         // do not add \t to last entry
         if (i < self->numEntries - 1) {
             strcat(currentRow, "\t");
@@ -83,10 +92,24 @@ int parse(struct ParserSelf* self, const char* printedString) {
         strcat(self->results, currentRow);
     }
     if (self->columnValues[0] != 0) {
-        char temp[10] = "";
-        sprintf(temp, "\n%d", self->columnValues[0]);
-        strcat(self->results, temp);
+        strcat(self->results, "\n");
     }
+    for (int i = 0; i < self->numEntries; i++) {
+        if (self->columnValues[i] != 0) {
+            char currentRowValues[10] = "";
+            sprintf(currentRowValues, "%d", self->columnValues[i]);
+            // do not add \t to last entry
+            if (i < self->numEntries - 1) {
+                strcat(currentRowValues, "\t");
+            }
+            strcat(self->results, currentRowValues);
+        }
+    }
+//    if (self->columnValues[0] != 0) {
+//        char temp[10] = "";
+//        sprintf(temp, "\n%d", self->columnValues[0]);
+//        strcat(self->results, temp);
+//    }
     return 0; // retrieve columnHeader with SELECT
 }
 
@@ -98,4 +121,13 @@ int numEntriesInStatement(const char *printedString) {
         numEntries++;
     }
     return numEntries;
+}
+
+void createColumns(const struct ParserSelf *self, const char *printedString) {
+    char temp[10][50] = {"", "", "", "", "", "", "", "", "", "" };
+    findColumnLabel(temp, printedString, self->numEntries);
+    for (int i = 0; i < self->numEntries; i++) {
+        printf("columnLabel: %s", temp[i]);
+        strcpy(self->columnHeaders[i], &temp[i][0]); // store this as columnHeader
+    }
 }

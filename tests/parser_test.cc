@@ -117,3 +117,26 @@ TEST(InsertIntoStoresAnyNumberData, BasicAssertions) {
 
     EXPECT_STREQ("table\nID\n7", self.results);
 }
+TEST(InsertIntoStoresAddsTwoValues, BasicAssertions) {
+    char createTable[] = "CREATE TABLE default (ID int,Age int);";
+    struct ParserSelf self = {
+            "",
+
+            {
+                    "", "", "", "", "",
+                    "", "", "", "", ""
+            },
+            {
+                    0, 0, 0, 0, 0,
+                    0, 0, 0, 0, 0
+            }
+    };
+    parse(&self, createTable);
+    char insertInto[] = "INSERT INTO default VALUES (7,13);";
+    parse(&self, insertInto);
+    char select[] = "SELECT * FROM default;";
+
+    parse(&self, select);
+
+    EXPECT_STREQ("table\nID\tAge\n7\t13", self.results);
+}
