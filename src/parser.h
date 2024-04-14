@@ -6,9 +6,8 @@
 
 struct ParserSelf {
     char results[50];
-    char columnHeader[50];
+    char columnHeaders[2][50];
     int columnValue;
-    char columnHeaderTwo[50];
 };
 
 int findString(int pos, const char charStr, const char* searchString);

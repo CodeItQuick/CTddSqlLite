@@ -48,13 +48,13 @@ int parse(struct ParserSelf* self, const char* printedString) {
         if (commaIdx < strlen(printedString)) {
             char columnLabel[2][50] = { "", "" };
             findColumnLabel(columnLabel, printedString, 2);
-            strcpy(self->columnHeader, &columnLabel[0][0]); // store this as columnHeader
-            strcpy(self->columnHeaderTwo, &columnLabel[1][0]); // store this as columnHeader
+            strcpy(self->columnHeaders[0], &columnLabel[0][0]); // store this as columnHeader
+            strcpy(self->columnHeaders[1], &columnLabel[1][0]); // store this as columnHeader
         } else {
             char columnLabel[1][50] = { "" };
             findColumnLabel(columnLabel, printedString, 1);
-            strcpy(self->columnHeader, &columnLabel[0][0]); // store this as columnHeader
-            strcpy(self->columnHeaderTwo, ""); // store this as columnHeader
+            strcpy(self->columnHeaders[0], &columnLabel[0][0]); // store this as columnHeader
+            strcpy(self->columnHeaders[1], ""); // store this as columnHeader
         }
         return 0;
     }
@@ -64,9 +64,9 @@ int parse(struct ParserSelf* self, const char* printedString) {
     }
     // SELECT
     if (self->columnValue == 0) {
-        sprintf(self->results, "table\n%s\t%s", self->columnHeader, self->columnHeaderTwo);
+        sprintf(self->results, "table\n%s\t%s", self->columnHeaders[0], self->columnHeaders[1]);
         return 0; // retrieve columnHeader with SELECT
     }
-    sprintf(self->results, "table\n%s\n%d", self->columnHeader, self->columnValue);
+    sprintf(self->results, "table\n%s\n%d", self->columnHeaders[0], self->columnValue);
     return 0; // retrieve columnHeader with SELECT
 }
