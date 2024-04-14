@@ -61,6 +61,16 @@ TEST(SelectRetrievesTwoColumnLabel, BasicAssertions) {
 
     EXPECT_STREQ("table\nID\tUsername", self.results);
 }
+TEST(SelectRetrievesThreeColumnLabel, BasicAssertions) {
+    char createTableStatement[] = "CREATE TABLE default (ID int,Username varchar,Age int);";
+    struct ParserSelf self = { "", "", 0 };
+    parse(&self, createTableStatement);
+    char select[] = "SELECT * FROM default;";
+
+    parse(&self, select);
+
+    EXPECT_STREQ("table\nID\tUsername\tAge", self.results);
+}
 TEST(InsertIntoStoresData, BasicAssertions) {
     char createTable[] = "CREATE TABLE default (ID int);";
     struct ParserSelf self = { "", "", 0 };

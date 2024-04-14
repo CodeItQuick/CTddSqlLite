@@ -6,7 +6,7 @@
 
 struct ParserSelf {
     char results[50];
-    char columnHeaders[2][50];
+    char columnHeaders[10][50];
     int columnValue;
 };
 
