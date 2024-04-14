@@ -10,6 +10,10 @@ int numEntriesInStatement(const char *printedString);
 
 void createColumns(const struct ParserSelf *self, const char *printedString);
 
+void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx);
+
+void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx);
+
 int findString(int pos, const char charStr, const char searchString[])
 {
     int c = 0;
@@ -66,19 +70,9 @@ int parse(struct ParserSelf* self, const char* printedString) {
 
         // for single entry in VALUES (7)
         if (self->numEntries == 1) {
-            int stringLength = endIdx - startIdx;
-            char insertValue[5] = "";
-            strncpy(insertValue, &printedString[startIdx], stringLength);
-            self->columnValues[0] = atoi(insertValue);
+            executeInsertSingleEntry(self, printedString, startIdx, endIdx);
         }
-        for (int i = 0; i < self->numEntries; i++) {
-            int commaIdx = findString(0, ',', printedString) + 1;
-            int startToCommaLength = endIdx - startIdx;
-            char insertValue[5] = "";
-            strncpy(insertValue, &printedString[startIdx], startToCommaLength);
-            self->columnValues[i] = atoi(insertValue);
-            startIdx = commaIdx;
-        }
+        executeInsertMultipleEntries(self, printedString, startIdx, endIdx);
         return 0;
     }
     // SELECT
@@ -105,12 +99,25 @@ int parse(struct ParserSelf* self, const char* printedString) {
             strcat(self->results, currentRowValues);
         }
     }
-//    if (self->columnValues[0] != 0) {
-//        char temp[10] = "";
-//        sprintf(temp, "\n%d", self->columnValues[0]);
-//        strcat(self->results, temp);
-//    }
     return 0; // retrieve columnHeader with SELECT
+}
+
+void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx) {
+    for (int i = 0; i < self->numEntries; i++) {
+        int commaIdx = findString(0, ',', printedString) + 1;
+        int startToCommaLength = endIdx - startIdx;
+        char insertValue[5] = "";
+        strncpy(insertValue, &printedString[startIdx], startToCommaLength);
+        self->columnValues[i] = atoi(insertValue);
+        startIdx = commaIdx;
+    }
+}
+
+void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx) {
+    int stringLength = endIdx - startIdx;
+    char insertValue[5] = "";
+    strncpy(insertValue, &printedString[startIdx], stringLength);
+    self->columnValues[0] = atoi(insertValue);
 }
 
 int numEntriesInStatement(const char *printedString) {
