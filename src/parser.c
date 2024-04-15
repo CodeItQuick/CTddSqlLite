@@ -18,6 +18,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
                 "","", "", "", ""
             }
     };
+    strcpy(self->results, "");
 
     Tokenize(statementRequest, &token);
 
@@ -27,12 +28,14 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
         statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
         // loop to determine number of commas/entries in CREATE TABLE statement
         executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
+        strcpy(self->results, "success\n");
         return 0;
     }
     // INSERT INTO
     if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
         statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
         executeInsertStatement(self, &token);
+        strcpy(self->results, "success\n");
         return 0;
     }
     // SELECT
