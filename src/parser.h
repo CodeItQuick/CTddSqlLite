@@ -20,7 +20,7 @@ int findString(int pos, const char charStr, const char* searchString);
 int findColumnLabel(char self[][50], const char* inputString, int selfArraySize);
 int parse(struct ParserSelf* self, const char* statementRequest);
 
-int numEntriesInStatement(const char *printedString);
+int numTableColumns(const char *printedString);
 
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *tokens);
 

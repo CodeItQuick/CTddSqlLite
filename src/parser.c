@@ -24,7 +24,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
 
     // CREATE TABLE
     if (strlen(token.command) > 0 && strcmp(token.command, CREATE_STATEMENT) == 0) {
-        self->numEntries = numEntriesInStatement(statementRequest);
+        self->numEntries = numTableColumns(statementRequest);
         findColumnLabel(token.tokens, statementRequest, self->numEntries);
         // loop to determine number of commas/entries in CREATE TABLE statement
         executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
@@ -126,7 +126,7 @@ void executeSelectTableHeaders(struct ParserSelf *self) {
     }
 }
 
-int numEntriesInStatement(const char *printedString) {
+int numTableColumns(const char *printedString) {
     int startIdx = 0, commaIdx = 0, numEntries = 0;
     while(startIdx < strlen(printedString)) {
         startIdx = findString(commaIdx + 1, ',', printedString);
