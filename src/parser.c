@@ -6,33 +6,32 @@
 #include <stdlib.h>
 #include "parser.h"
 // valid statements for parser
-char CREATE_STATEMENT[6] = "CREATE";
-char INSERT_STATEMENT[6] = "INSERT";
-char SELECT_STATEMENT[6] = "SELECT";
-int parse(struct ParserSelf* self, const char* printedString) {
-    char commandName[50] = "";
+char CREATE_STATEMENT[7] = "CREATE";
+char INSERT_STATEMENT[7] = "INSERT";
+char SELECT_STATEMENT[7] = "SELECT";
 
-    if (strlen(printedString) > 11) {
-        strncpy(commandName, &printedString[0], 6);
-        commandName[12] = '\0';
-    }
+int parse(struct ParserSelf* self, const char* statementRequest) {
+    char commandToken[50] = "";
+
+    Tokenize(statementRequest, commandToken);
+
     // CREATE TABLE
-    if (strlen(commandName) > 0 && strcmp(commandName, CREATE_STATEMENT) == 0) {
+    if (strlen(commandToken) > 0 && strcmp(commandToken, CREATE_STATEMENT) == 0) {
         // loop to determine number of commas/entries in CREATE TABLE statement
-        self->numEntries = numEntriesInStatement(printedString);
-        executeCreateTableStatement(self, printedString); // TODO: max of 10 columns, produce error message if more attempted
+        self->numEntries = numEntriesInStatement(statementRequest);
+        executeCreateTableStatement(self, statementRequest); // TODO: max of 10 columns, produce error message if more attempted
         return 0;
     }
     // INSERT INTO
-    if (strlen(commandName) > 0 && strcmp(commandName, INSERT_STATEMENT) == 0) {
+    if (strlen(commandToken) > 0 && strcmp(commandToken, INSERT_STATEMENT) == 0) {
         if (self->numEntries == 1) {
-            executeInsertSingleEntry(self, printedString);
+            executeInsertSingleEntry(self, statementRequest);
         }
-        executeInsertMultipleEntries(self, printedString);
+        executeInsertMultipleEntries(self, statementRequest);
         return 0;
     }
     // SELECT
-    if (strlen(commandName) > 0 && strcmp(commandName, SELECT_STATEMENT) == 0) {
+    if (strlen(commandToken) > 0 && strcmp(commandToken, SELECT_STATEMENT) == 0) {
         sprintf(self->results, "table\n");
         // row headers
         executeSelectTableHeaders(self);
@@ -40,6 +39,13 @@ int parse(struct ParserSelf* self, const char* printedString) {
         return 0; // retrieve columnHeader with SELECT
     }
     return 1; // error, should have attempted at least one valid statement
+}
+
+void Tokenize(const char *statementRequest, char *commandName) {
+    if (strlen(statementRequest) > 6) {
+        strncpy(commandName, &statementRequest[0], 6);
+        commandName[6] = '\0';
+    }
 }
 
 int findString(int pos, const char charStr, const char searchString[])

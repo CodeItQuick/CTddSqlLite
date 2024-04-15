@@ -13,7 +13,7 @@ struct ParserSelf {
 
 int findString(int pos, const char charStr, const char* searchString);
 int findColumnLabel(char self[][50], const char* inputString, int selfArraySize);
-int parse(struct ParserSelf* self, const char* printedString);
+int parse(struct ParserSelf* self, const char* statementRequest);
 
 int numEntriesInStatement(const char *printedString);
 
@@ -26,3 +26,5 @@ void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedSt
 void executeSelectTableHeaders(struct ParserSelf *self);
 
 void executeSelectTableValues(struct ParserSelf *self);
+
+void Tokenize(const char *statementRequest, char *commandName);
