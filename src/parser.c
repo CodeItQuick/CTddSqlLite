@@ -24,18 +24,19 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
 
     // CREATE TABLE
     if (strlen(token.command) > 0 && strcmp(token.command, CREATE_STATEMENT) == 0) {
-        // loop to determine number of commas/entries in CREATE TABLE statement
         self->numEntries = numEntriesInStatement(statementRequest);
         findColumnLabel(token.tokens, statementRequest, self->numEntries);
+        // loop to determine number of commas/entries in CREATE TABLE statement
         executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
         return 0;
     }
     // INSERT INTO
     if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
+        findColumnLabel(token.tokens, statementRequest, self->numEntries);
         if (self->numEntries == 1) {
             executeInsertSingleEntry(self, &token);
         }
-        executeInsertMultipleEntries(self, statementRequest);
+        executeInsertMultipleEntries(self, &token);
         return 0;
     }
     // SELECT
@@ -94,16 +95,12 @@ void executeCreateTableStatement(const struct ParserSelf *self, struct Statement
     }
 }
 
-void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString) {
-    int startIdx = findString(0, '(', printedString) + 1;
-    int endIdx = findString(startIdx, ')', printedString);
+void executeInsertMultipleEntries(struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numEntries; i++) {
-        int commaIdx = findString(0, ',', printedString) + 1;
-        int startToCommaLength = endIdx - startIdx;
-        char insertValue[5] = "";
-        strncpy(insertValue, &printedString[startIdx], startToCommaLength);
+        char insertValue[2] = "";
+        strncpy(insertValue, &token->tokens[i], 1);
         self->columnValues[i] = atoi(insertValue);
-        startIdx = commaIdx;
+        printf("value: %d", self->columnValues[i]);
     }
 }
 

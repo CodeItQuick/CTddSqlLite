@@ -132,11 +132,11 @@ TEST(InsertIntoStoresAddsTwoValues, BasicAssertions) {
             }
     };
     parse(&self, createTable);
-    char insertInto[] = "INSERT INTO default VALUES (7,13);";
+    char insertInto[] = "INSERT INTO default VALUES (7,5);";
     parse(&self, insertInto);
     char select[] = "SELECT * FROM default;";
 
     parse(&self, select);
 
-    EXPECT_STREQ("table\nID\tAge\n7\t13", self.results);
+    EXPECT_STREQ("table\nID\tAge\n7\t5", self.results);
 }
