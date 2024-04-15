@@ -25,19 +25,21 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     // CREATE TABLE
     if (strlen(token.command) > 0 && strcmp(token.command, CREATE_STATEMENT) == 0) {
         self->numEntries = numTableColumns(statementRequest);
-        findColumnLabel(token.tokens, statementRequest, self->numEntries);
+        statementTokenValues(token.tokens, statementRequest, self->numEntries);
         // loop to determine number of commas/entries in CREATE TABLE statement
         executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
         return 0;
     }
     // INSERT INTO
     if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
-        findColumnLabel(token.tokens, statementRequest, self->numEntries);
+        statementTokenValues(token.tokens, statementRequest, self->numEntries);
         executeInsertStatement(self, &token);
         return 0;
     }
     // SELECT
     if (strlen(token.command) > 0 && strcmp(token.command, SELECT_STATEMENT) == 0) {
+        // TODO: all SELECT statements are SELECT *, add statements into it
+        // statementTokenValues(token.tokens, statementRequest, self->numEntries);
         sprintf(self->results, "table\n");
         // row headers
         executeSelectTableHeaders(self);
@@ -68,7 +70,7 @@ int findString(int pos, const char charStr, const char searchString[])
 
     return pos + c;
 }
-int findColumnLabel(char self[][50], const char* inputString, int selfArraySize)
+int statementTokenValues(char self[][50], const char* inputString, int selfArraySize)
 {
     int startIdx = findString(0, '(', inputString) + 1;
     int endIdx = findString(startIdx, ' ', inputString);

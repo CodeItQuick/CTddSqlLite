@@ -13,7 +13,7 @@ TEST(CanRetrieveColumnLabel, BasicAssertions) {
     char createTableStatement[] = "CREATE TABLE default (Age int);";
 
     char columnLabel[1][50] = { "" };
-    findColumnLabel(columnLabel, createTableStatement, 1);
+    statementTokenValues(columnLabel, createTableStatement, 1);
 
     EXPECT_STREQ("Age", columnLabel[0]);
 }
@@ -21,7 +21,7 @@ TEST(CanRetrieveColumnLabelId, BasicAssertions) {
     char createTableStatement[] = "CREATE TABLE default (ID int);";
 
     char columnLabel[1][50] = { "" };
-    findColumnLabel(columnLabel, createTableStatement, 1);
+    statementTokenValues(columnLabel, createTableStatement, 1);
 
     EXPECT_STREQ("ID", columnLabel[0]);
 }
@@ -29,7 +29,7 @@ TEST(CanRetrieveColumnLabelIdAndLabelAge, BasicAssertions) {
     char createTableStatement[] = "CREATE TABLE default (ID int,Age int);";
 
     char columnLabel[2][50] = { "", "" };
-    findColumnLabel(columnLabel, createTableStatement, 2);
+    statementTokenValues(columnLabel, createTableStatement, 2);
 
     EXPECT_STREQ("ID", columnLabel[0]);
     EXPECT_STREQ("Age", columnLabel[1]);
