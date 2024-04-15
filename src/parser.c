@@ -10,20 +10,28 @@ char CREATE_STATEMENT[7] = "CREATE";
 char INSERT_STATEMENT[7] = "INSERT";
 char SELECT_STATEMENT[7] = "SELECT";
 
-int parse(struct ParserSelf* self, const char* statementRequest) {
-    char commandToken[50] = "";
 
-    Tokenize(statementRequest, commandToken);
+int parse(struct ParserSelf* self, const char* statementRequest) {
+    struct StatementTokens token = {
+            "",
+            {
+                "","", "", "", "",
+                "","", "", "", ""
+            }
+    };
+
+    Tokenize(statementRequest, &token);
 
     // CREATE TABLE
-    if (strlen(commandToken) > 0 && strcmp(commandToken, CREATE_STATEMENT) == 0) {
+    if (strlen(token.command) > 0 && strcmp(token.command, CREATE_STATEMENT) == 0) {
         // loop to determine number of commas/entries in CREATE TABLE statement
         self->numEntries = numEntriesInStatement(statementRequest);
-        executeCreateTableStatement(self, statementRequest); // TODO: max of 10 columns, produce error message if more attempted
+        findColumnLabel(token.tokens, statementRequest, self->numEntries);
+        executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
         return 0;
     }
     // INSERT INTO
-    if (strlen(commandToken) > 0 && strcmp(commandToken, INSERT_STATEMENT) == 0) {
+    if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
         if (self->numEntries == 1) {
             executeInsertSingleEntry(self, statementRequest);
         }
@@ -31,7 +39,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
         return 0;
     }
     // SELECT
-    if (strlen(commandToken) > 0 && strcmp(commandToken, SELECT_STATEMENT) == 0) {
+    if (strlen(token.command) > 0 && strcmp(token.command, SELECT_STATEMENT) == 0) {
         sprintf(self->results, "table\n");
         // row headers
         executeSelectTableHeaders(self);
@@ -40,10 +48,11 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     }
     return 1; // error, should have attempted at least one valid statement
 }
-void Tokenize(const char *statementRequest, char *commandName) {
+void
+Tokenize(const char *statementRequest, struct StatementTokens *token) {
     if (strlen(statementRequest) > 6) {
-        strncpy(commandName, &statementRequest[0], 6);
-        commandName[6] = '\0';
+        strncpy(token->command, &statementRequest[0], 6);
+        token->command[6] = '\0';
     }
 }
 // String Helper Functions
@@ -79,11 +88,9 @@ int findColumnLabel(char self[][50], const char* inputString, int selfArraySize)
     return 0;
 }
 // String Helper Functions
-void executeCreateTableStatement(const struct ParserSelf *self, const char *printedString) {
-    char temp[10][50] = {"", "", "", "", "", "", "", "", "", "" };
-    findColumnLabel(temp, printedString, self->numEntries);
+void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numEntries; i++) {
-        strcpy(self->columnHeaders[i], &temp[i][0]); // store this as columnHeader
+        strncpy(self->columnHeaders[i], &token->tokens[i][0], strlen(token->tokens[i])); // store this as columnHeader
     }
 }
 
