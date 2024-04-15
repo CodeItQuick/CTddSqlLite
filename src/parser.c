@@ -5,7 +5,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include "parser.h"
-
+// valid statements for parser
+char CREATE_STATEMENT[6] = "CREATE";
+char INSERT_STATEMENT[6] = "INSERT";
+char SELECT_STATEMENT[6] = "SELECT";
 int parse(struct ParserSelf* self, const char* printedString) {
     char commandName[50] = "";
 
@@ -14,18 +17,14 @@ int parse(struct ParserSelf* self, const char* printedString) {
         commandName[12] = '\0';
     }
     // CREATE TABLE
-    if (strlen(commandName) > 0 && strcmp(commandName, "CREATE") == 0) {
+    if (strlen(commandName) > 0 && strcmp(commandName, CREATE_STATEMENT) == 0) {
         // loop to determine number of commas/entries in CREATE TABLE statement
         self->numEntries = numEntriesInStatement(printedString);
-
-        // TODO: max of 10 columns, produce error message if more attempted
-        executeCreateTableStatement(self, printedString);
-
+        executeCreateTableStatement(self, printedString); // TODO: max of 10 columns, produce error message if more attempted
         return 0;
     }
     // INSERT INTO
-    if (strlen(commandName) > 0 && strcmp(commandName, "INSERT") == 0) {
-        // for single entry in VALUES (7)
+    if (strlen(commandName) > 0 && strcmp(commandName, INSERT_STATEMENT) == 0) {
         if (self->numEntries == 1) {
             executeInsertSingleEntry(self, printedString);
         }
@@ -33,13 +32,14 @@ int parse(struct ParserSelf* self, const char* printedString) {
         return 0;
     }
     // SELECT
-    if (strlen(commandName) > 0 && strcmp(commandName, "SELECT") == 0) {
+    if (strlen(commandName) > 0 && strcmp(commandName, SELECT_STATEMENT) == 0) {
         sprintf(self->results, "table\n");
         // row headers
         executeSelectTableHeaders(self);
         executeSelectTableValues(self);
+        return 0; // retrieve columnHeader with SELECT
     }
-    return 0; // retrieve columnHeader with SELECT
+    return 1; // error, should have attempted at least one valid statement
 }
 
 int findString(int pos, const char charStr, const char searchString[])
