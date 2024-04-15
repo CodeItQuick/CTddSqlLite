@@ -24,22 +24,22 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
 
     // CREATE TABLE
     if (strlen(token.command) > 0 && strcmp(token.command, CREATE_STATEMENT) == 0) {
-        self->numEntries = numTableColumns(statementRequest);
-        statementTokenValues(token.tokens, statementRequest, self->numEntries);
+        self->numTableColumns = numTableColumns(statementRequest);
+        statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
         // loop to determine number of commas/entries in CREATE TABLE statement
         executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
         return 0;
     }
     // INSERT INTO
     if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
-        statementTokenValues(token.tokens, statementRequest, self->numEntries);
+        statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
         executeInsertStatement(self, &token);
         return 0;
     }
     // SELECT
     if (strlen(token.command) > 0 && strcmp(token.command, SELECT_STATEMENT) == 0) {
         // TODO: all SELECT statements are SELECT *, add statements into it
-        // statementTokenValues(token.tokens, statementRequest, self->numEntries);
+        // statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
         sprintf(self->results, "table\n");
         // row headers
         executeSelectTableHeaders(self);
@@ -90,12 +90,12 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 }
 // String Helper Functions
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *token) {
-    for (int i = 0; i < self->numEntries; i++) {
+    for (int i = 0; i < self->numTableColumns; i++) {
         strncpy(self->columnHeaders[i], &token->tokens[i][0], strlen(token->tokens[i])); // store this as columnHeader
     }
 }
 void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token) {
-    for (int i = 0; i < self->numEntries; i++) {
+    for (int i = 0; i < self->numTableColumns; i++) {
         self->columnValues[i] = atoi(token->tokens[i]);
     }
 }
@@ -104,12 +104,12 @@ void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row
         strcat(self->results, "\n");
     }
     // print row values
-    for (int i = 0; i < self->numEntries; i++) {
+    for (int i = 0; i < self->numTableColumns; i++) {
         if (self->columnValues[i] != 0) {
             char currentRowValues[10] = "";
             sprintf(currentRowValues, "%d", self->columnValues[i]);
             // do not add \t to last entry
-            if (i < self->numEntries - 1) {
+            if (i < self->numTableColumns - 1) {
                 strcat(currentRowValues, "\t");
             }
             strcat(self->results, currentRowValues);
@@ -118,10 +118,10 @@ void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row
 }
 
 void executeSelectTableHeaders(struct ParserSelf *self) {
-    for(int i = 0; i < self->numEntries; i++) {
+    for(int i = 0; i < self->numTableColumns; i++) {
         char* currentRow = self->columnHeaders[i];
         // do not add \t to last entry
-        if (i < self->numEntries - 1) {
+        if (i < self->numTableColumns - 1) {
             strcat(currentRow, "\t");
         }
         strcat(self->results, currentRow);

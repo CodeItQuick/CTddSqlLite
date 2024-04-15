@@ -8,7 +8,7 @@ struct ParserSelf {
     char results[50];
     char columnHeaders[10][50];
     int columnValues[10];
-    int numEntries;
+    int numTableColumns;
 };
 
 struct StatementTokens {
