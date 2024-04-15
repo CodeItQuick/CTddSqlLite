@@ -10,7 +10,6 @@ char CREATE_STATEMENT[7] = "CREATE";
 char INSERT_STATEMENT[7] = "INSERT";
 char SELECT_STATEMENT[7] = "SELECT";
 
-
 int parse(struct ParserSelf* self, const char* statementRequest) {
     struct StatementTokens token = {
             "",
@@ -48,8 +47,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     }
     return 1; // error, should have attempted at least one valid statement
 }
-void
-Tokenize(const char *statementRequest, struct StatementTokens *token) {
+void Tokenize(const char *statementRequest, struct StatementTokens *token) {
     if (strlen(statementRequest) > 6) {
         strncpy(token->command, &statementRequest[0], 6);
         token->command[6] = '\0';
@@ -116,7 +114,6 @@ void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row
         }
     }
 }
-
 void executeSelectTableHeaders(struct ParserSelf *self) {
     for(int i = 0; i < self->numTableColumns; i++) {
         char* currentRow = self->columnHeaders[i];
@@ -127,7 +124,6 @@ void executeSelectTableHeaders(struct ParserSelf *self) {
         strcat(self->results, currentRow);
     }
 }
-
 int numTableColumns(const char *printedString) {
     int startIdx = 0, commaIdx = 0, numEntries = 0;
     while(startIdx < strlen(printedString)) {
