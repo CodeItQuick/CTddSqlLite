@@ -40,14 +40,13 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     }
     return 1; // error, should have attempted at least one valid statement
 }
-
 void Tokenize(const char *statementRequest, char *commandName) {
     if (strlen(statementRequest) > 6) {
         strncpy(commandName, &statementRequest[0], 6);
         commandName[6] = '\0';
     }
 }
-
+// String Helper Functions
 int findString(int pos, const char charStr, const char searchString[])
 {
     int c = 0;
@@ -79,6 +78,27 @@ int findColumnLabel(char self[][50], const char* inputString, int selfArraySize)
 
     return 0;
 }
+// String Helper Functions
+void executeCreateTableStatement(const struct ParserSelf *self, const char *printedString) {
+    char temp[10][50] = {"", "", "", "", "", "", "", "", "", "" };
+    findColumnLabel(temp, printedString, self->numEntries);
+    for (int i = 0; i < self->numEntries; i++) {
+        strcpy(self->columnHeaders[i], &temp[i][0]); // store this as columnHeader
+    }
+}
+
+void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString) {
+    int startIdx = findString(0, '(', printedString) + 1;
+    int endIdx = findString(startIdx, ')', printedString);
+    for (int i = 0; i < self->numEntries; i++) {
+        int commaIdx = findString(0, ',', printedString) + 1;
+        int startToCommaLength = endIdx - startIdx;
+        char insertValue[5] = "";
+        strncpy(insertValue, &printedString[startIdx], startToCommaLength);
+        self->columnValues[i] = atoi(insertValue);
+        startIdx = commaIdx;
+    }
+}
 
 void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row values exist
     if (self->columnValues[0] != 0) {
@@ -109,19 +129,6 @@ void executeSelectTableHeaders(struct ParserSelf *self) {
     }
 }
 
-void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString) {
-    int startIdx = findString(0, '(', printedString) + 1;
-    int endIdx = findString(startIdx, ')', printedString);
-    for (int i = 0; i < self->numEntries; i++) {
-        int commaIdx = findString(0, ',', printedString) + 1;
-        int startToCommaLength = endIdx - startIdx;
-        char insertValue[5] = "";
-        strncpy(insertValue, &printedString[startIdx], startToCommaLength);
-        self->columnValues[i] = atoi(insertValue);
-        startIdx = commaIdx;
-    }
-}
-
 void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString) {
     int startIdx = findString(0, '(', printedString) + 1;
     int endIdx = findString(startIdx, ')', printedString);
@@ -139,13 +146,4 @@ int numEntriesInStatement(const char *printedString) {
         numEntries++;
     }
     return numEntries;
-}
-
-void executeCreateTableStatement(const struct ParserSelf *self, const char *printedString) {
-    char temp[10][50] = {"", "", "", "", "", "", "", "", "", "" };
-    findColumnLabel(temp, printedString, self->numEntries);
-    for (int i = 0; i < self->numEntries; i++) {
-        printf("columnLabel: %s", temp[i]);
-        strcpy(self->columnHeaders[i], &temp[i][0]); // store this as columnHeader
-    }
 }
