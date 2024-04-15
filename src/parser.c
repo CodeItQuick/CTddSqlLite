@@ -6,13 +6,41 @@
 #include <stdlib.h>
 #include "parser.h"
 
-int numEntriesInStatement(const char *printedString);
+int parse(struct ParserSelf* self, const char* printedString) {
+    char commandName[50] = "";
 
-void createColumns(const struct ParserSelf *self, const char *printedString);
+    if (strlen(printedString) > 11) {
+        strncpy(commandName, &printedString[0], 6);
+        commandName[12] = '\0';
+    }
+    // CREATE TABLE
+    if (strlen(commandName) > 0 && strcmp(commandName, "CREATE") == 0) {
+        // loop to determine number of commas/entries in CREATE TABLE statement
+        self->numEntries = numEntriesInStatement(printedString);
 
-void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx);
+        // TODO: max of 10 columns, produce error message if more attempted
+        executeCreateTableStatement(self, printedString);
 
-void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx);
+        return 0;
+    }
+    // INSERT INTO
+    if (strlen(commandName) > 0 && strcmp(commandName, "INSERT") == 0) {
+        // for single entry in VALUES (7)
+        if (self->numEntries == 1) {
+            executeInsertSingleEntry(self, printedString);
+        }
+        executeInsertMultipleEntries(self, printedString);
+        return 0;
+    }
+    // SELECT
+    if (strlen(commandName) > 0 && strcmp(commandName, "SELECT") == 0) {
+        sprintf(self->results, "table\n");
+        // row headers
+        executeSelectTableHeaders(self);
+        executeSelectTableValues(self);
+    }
+    return 0; // retrieve columnHeader with SELECT
+}
 
 int findString(int pos, const char charStr, const char searchString[])
 {
@@ -28,7 +56,6 @@ int findString(int pos, const char charStr, const char searchString[])
 
     return pos + c;
 }
-
 int findColumnLabel(char self[][50], const char* inputString, int selfArraySize)
 {
     int startIdx = findString(0, '(', inputString) + 1;
@@ -46,48 +73,12 @@ int findColumnLabel(char self[][50], const char* inputString, int selfArraySize)
 
     return 0;
 }
-int parse(struct ParserSelf* self, const char* printedString) {
-    char printedSubstring[50] = "";
 
-    if (strlen(printedString) > 11) {
-        strncpy(printedSubstring, &printedString[0], 12);
-        printedSubstring[12] = '\0';
-    }
-    // CREATE TABLE
-    if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "CREATE TABLE") == 0) {
-        // loop to determine number of commas/entries in CREATE TABLE statement
-        self->numEntries = numEntriesInStatement(printedString);
-
-        // TODO: max of 10 columns, produce error message if more attempted
-        createColumns(self, printedString);
-
-        return 0;
-    }
-    // INSERT INTO
-    if (strlen(printedSubstring) > 0 && strcmp(printedSubstring, "INSERT INTO ") == 0) {
-        int startIdx = findString(0, '(', printedString) + 1;
-        int endIdx = findString(startIdx, ')', printedString);
-
-        // for single entry in VALUES (7)
-        if (self->numEntries == 1) {
-            executeInsertSingleEntry(self, printedString, startIdx, endIdx);
-        }
-        executeInsertMultipleEntries(self, printedString, startIdx, endIdx);
-        return 0;
-    }
-    // SELECT
-    sprintf(self->results, "table\n");
-    for(int i = 0; i < self->numEntries; i++) {
-        char* currentRow = self->columnHeaders[i];
-        // do not add \t to last entry
-        if (i < self->numEntries - 1) {
-            strcat(currentRow, "\t");
-        }
-        strcat(self->results, currentRow);
-    }
+void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row values exist
     if (self->columnValues[0] != 0) {
         strcat(self->results, "\n");
     }
+    // print row values
     for (int i = 0; i < self->numEntries; i++) {
         if (self->columnValues[i] != 0) {
             char currentRowValues[10] = "";
@@ -99,10 +90,22 @@ int parse(struct ParserSelf* self, const char* printedString) {
             strcat(self->results, currentRowValues);
         }
     }
-    return 0; // retrieve columnHeader with SELECT
 }
 
-void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx) {
+void executeSelectTableHeaders(struct ParserSelf *self) {
+    for(int i = 0; i < self->numEntries; i++) {
+        char* currentRow = self->columnHeaders[i];
+        // do not add \t to last entry
+        if (i < self->numEntries - 1) {
+            strcat(currentRow, "\t");
+        }
+        strcat(self->results, currentRow);
+    }
+}
+
+void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedString) {
+    int startIdx = findString(0, '(', printedString) + 1;
+    int endIdx = findString(startIdx, ')', printedString);
     for (int i = 0; i < self->numEntries; i++) {
         int commaIdx = findString(0, ',', printedString) + 1;
         int startToCommaLength = endIdx - startIdx;
@@ -113,7 +116,9 @@ void executeInsertMultipleEntries(struct ParserSelf *self, const char *printedSt
     }
 }
 
-void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString, int startIdx, int endIdx) {
+void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString) {
+    int startIdx = findString(0, '(', printedString) + 1;
+    int endIdx = findString(startIdx, ')', printedString);
     int stringLength = endIdx - startIdx;
     char insertValue[5] = "";
     strncpy(insertValue, &printedString[startIdx], stringLength);
@@ -130,7 +135,7 @@ int numEntriesInStatement(const char *printedString) {
     return numEntries;
 }
 
-void createColumns(const struct ParserSelf *self, const char *printedString) {
+void executeCreateTableStatement(const struct ParserSelf *self, const char *printedString) {
     char temp[10][50] = {"", "", "", "", "", "", "", "", "", "" };
     findColumnLabel(temp, printedString, self->numEntries);
     for (int i = 0; i < self->numEntries; i++) {
