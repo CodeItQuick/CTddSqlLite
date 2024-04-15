@@ -83,6 +83,7 @@ int findColumnLabel(char self[][50], const char* inputString, int selfArraySize)
         int commaIdx = findString(startIdx, ',', inputString) + 1;
         int commaSpaceIdx = findString(commaIdx, ' ', inputString);
         strncpy(self[i], &inputString[commaIdx], commaSpaceIdx - commaIdx);
+        self[i][commaSpaceIdx - commaIdx + 1] = '\0';
         startIdx = commaIdx;
     }
 
@@ -94,16 +95,11 @@ void executeCreateTableStatement(const struct ParserSelf *self, struct Statement
         strncpy(self->columnHeaders[i], &token->tokens[i][0], strlen(token->tokens[i])); // store this as columnHeader
     }
 }
-
 void executeInsertMultipleEntries(struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numEntries; i++) {
-        char insertValue[2] = "";
-        strncpy(insertValue, &token->tokens[i], 1);
-        self->columnValues[i] = atoi(insertValue);
-        printf("value: %d", self->columnValues[i]);
+        self->columnValues[i] = atoi(token->tokens[i]);
     }
 }
-
 void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row values exist
     if (self->columnValues[0] != 0) {
         strcat(self->results, "\n");
