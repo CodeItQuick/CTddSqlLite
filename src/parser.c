@@ -33,7 +33,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     // INSERT INTO
     if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
         if (self->numEntries == 1) {
-            executeInsertSingleEntry(self, statementRequest);
+            executeInsertSingleEntry(self, &token);
         }
         executeInsertMultipleEntries(self, statementRequest);
         return 0;
@@ -136,12 +136,9 @@ void executeSelectTableHeaders(struct ParserSelf *self) {
     }
 }
 
-void executeInsertSingleEntry(struct ParserSelf *self, const char *printedString) {
-    int startIdx = findString(0, '(', printedString) + 1;
-    int endIdx = findString(startIdx, ')', printedString);
-    int stringLength = endIdx - startIdx;
-    char insertValue[5] = "";
-    strncpy(insertValue, &printedString[startIdx], stringLength);
+void executeInsertSingleEntry(struct ParserSelf *self, struct StatementTokens *token) {
+    char insertValue[10] = "";
+    strncpy(insertValue, &token->tokens[0], strlen(token->tokens[0]));
     self->columnValues[0] = atoi(insertValue);
 }
 
