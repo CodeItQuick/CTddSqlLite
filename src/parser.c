@@ -33,10 +33,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     // INSERT INTO
     if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
         findColumnLabel(token.tokens, statementRequest, self->numEntries);
-        if (self->numEntries == 1) {
-            executeInsertSingleEntry(self, &token);
-        }
-        executeInsertMultipleEntries(self, &token);
+        executeInsertStatement(self, &token);
         return 0;
     }
     // SELECT
@@ -95,7 +92,7 @@ void executeCreateTableStatement(const struct ParserSelf *self, struct Statement
         strncpy(self->columnHeaders[i], &token->tokens[i][0], strlen(token->tokens[i])); // store this as columnHeader
     }
 }
-void executeInsertMultipleEntries(struct ParserSelf *self, struct StatementTokens *token) {
+void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numEntries; i++) {
         self->columnValues[i] = atoi(token->tokens[i]);
     }
@@ -127,12 +124,6 @@ void executeSelectTableHeaders(struct ParserSelf *self) {
         }
         strcat(self->results, currentRow);
     }
-}
-
-void executeInsertSingleEntry(struct ParserSelf *self, struct StatementTokens *token) {
-    char insertValue[10] = "";
-    strncpy(insertValue, &token->tokens[0], strlen(token->tokens[0]));
-    self->columnValues[0] = atoi(insertValue);
 }
 
 int numEntriesInStatement(const char *printedString) {

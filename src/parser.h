@@ -24,9 +24,7 @@ int numEntriesInStatement(const char *printedString);
 
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *tokens);
 
-void executeInsertSingleEntry(struct ParserSelf *self, struct StatementTokens *tokens);
-
-void executeInsertMultipleEntries(struct ParserSelf *self, struct StatementTokens *token);
+void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token);
 
 void executeSelectTableHeaders(struct ParserSelf *self);
 
