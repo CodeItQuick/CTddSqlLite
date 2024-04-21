@@ -114,13 +114,12 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numTableColumns; i++) {
         strncpy(self->columnHeaders[i], token->tokens[i], sizeof(token->tokens[i]));
-        printf("copied str: %s", self->columnHeaders[i]);
-        printf("token str: %s", token->tokens[i]);
     }
 }
 void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numTableColumns; i++) {
-        self->columnValues[i] = atoi(token->tokens[i]);
+        char *ptr = token->tokens[i];
+        self->columnValues[i] = strtol(token->tokens[i], &ptr, 10);
     }
 }
 void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row values exist
