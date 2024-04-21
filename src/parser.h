@@ -18,6 +18,7 @@ struct StatementTokens {
 
 int findString(int pos, const char charStr, const char* searchString);
 int statementTokenValues(char self[][50], const char* inputString, int selfArraySize);
+int selectStatementTokenValues(char self[][50], const char* inputString, int selfArraySize);
 int parse(struct ParserSelf* self, const char* statementRequest);
 
 int numTableColumns(const char *printedString);
@@ -26,7 +27,8 @@ void executeCreateTableStatement(const struct ParserSelf *self, struct Statement
 
 void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token);
 
-void executeSelectTableHeaders(struct ParserSelf *self);
+void executeSelectAllTableHeaders(struct ParserSelf *self);
+void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][50], int tableHeadersSize);
 
 void executeSelectTableValues(struct ParserSelf *self);
 

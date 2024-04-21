@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include "parser.h"
 // valid statements for parser
-char CREATE_STATEMENT[7] = "CREATE";
-char INSERT_STATEMENT[7] = "INSERT";
-char SELECT_STATEMENT[7] = "SELECT";
+const char CREATE_STATEMENT[] = "CREATE";
+const char INSERT_STATEMENT[] = "INSERT";
+const char SELECT_STATEMENT[] = "SELECT";
 
 int hashFunction(char *token) {
-    char* lookup_table[3] = {
+    const char* lookup_table[3] = {
             CREATE_STATEMENT,
             INSERT_STATEMENT,
             SELECT_STATEMENT
@@ -36,10 +36,6 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
 
     Tokenize(statementRequest, &token);
 
-    typedef struct {
-        char *key[7];
-    } t_symstruct;
-
     if (strlen(token.command) < 1) {
         return -1; // error
     }
@@ -62,10 +58,16 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
         case 2:
             // SELECT
             // TODO: all SELECT statements are SELECT *, add statements into it
-            // statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
+//            char selectColumns[][50];
+            selectStatementTokenValues(token.tokens, statementRequest, self->numTableColumns);
+//            sprintf("tokens: %s", &token.tokens[0][0]);
             sprintf(self->results, "table\n");
             // row headers
-            executeSelectTableHeaders(self);
+            if (findString(0, '*', statementRequest) < strlen(statementRequest)) {
+                executeSelectAllTableHeaders(self);
+            } else {
+                executeSelectTableHeaders(self, token.tokens, 1);
+            }
             executeSelectTableValues(self);
             return 0; // retrieve columnHeader with SELECT
     }
@@ -110,6 +112,27 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 
     return 0;
 }
+int selectStatementTokenValues(char self[][50], const char* inputString, int selfArraySize)
+{
+    int startIdx = findString(0, ' ', inputString) + 1;
+    int endIdx = findString(startIdx, ' ', inputString);
+    int commaIdx = findString(0, ',', inputString);
+    if (commaIdx < strlen(inputString)) {
+        endIdx = commaIdx;
+    }
+    int stringLength = endIdx - startIdx;
+    strncpy(self[0], &inputString[startIdx], stringLength);
+
+    for (int i = 1; i < selfArraySize; i++) {
+        commaIdx = findString(startIdx, ',', inputString) + 1;
+        int commaSpaceIdx = findString(commaIdx, ' ', inputString);
+        strncpy(self[i], &inputString[commaIdx], commaSpaceIdx - commaIdx);
+        self[i][commaSpaceIdx - commaIdx + 1] = '\0';
+        startIdx = commaIdx;
+    }
+
+    return 0;
+}
 // String Helper Functions
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numTableColumns; i++) {
@@ -139,11 +162,23 @@ void executeSelectTableValues(struct ParserSelf *self) {// goto next line if row
         }
     }
 }
-void executeSelectTableHeaders(struct ParserSelf *self) {
+void executeSelectAllTableHeaders(struct ParserSelf *self) {
     for(int i = 0; i < self->numTableColumns; i++) {
+
         char* currentRow = self->columnHeaders[i];
         // do not add \t to last entry
         if (i < self->numTableColumns - 1) {
+            strcat(currentRow, "\t");
+        }
+        strcat(self->results, currentRow);
+    }
+}
+void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][50], int tableHeadersSize) {
+    for(int i = 0; i < tableHeadersSize; i++) {
+
+        char* currentRow = tableHeaders[i];
+        // do not add \t to last entry
+        if (i < tableHeadersSize - 1) {
             strcat(currentRow, "\t");
         }
         strcat(self->results, currentRow);
