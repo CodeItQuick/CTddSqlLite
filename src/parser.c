@@ -113,7 +113,7 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
         int commaIdx = findString(startIdx, ',', inputString) + 1;
         int commaSpaceIdx = findString(commaIdx, ' ', inputString);
         if (commaSpaceIdx == 0) {
-            commaSpaceIdx = strlen(inputString);
+            commaSpaceIdx = strlen(inputString) - 2;
         }
         strncpy(self[i], &inputString[commaIdx], commaSpaceIdx - commaIdx);
         self[i][commaSpaceIdx - commaIdx + 1] = '\0';
