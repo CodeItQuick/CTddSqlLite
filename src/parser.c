@@ -10,43 +10,64 @@ char CREATE_STATEMENT[7] = "CREATE";
 char INSERT_STATEMENT[7] = "INSERT";
 char SELECT_STATEMENT[7] = "SELECT";
 
+int hashFunction(char *token) {
+    char* lookup_table[3] = {
+            CREATE_STATEMENT,
+            INSERT_STATEMENT,
+            SELECT_STATEMENT
+    };
+    for (int i = 0; i < 3; ++i) {
+        if (strcmp(token, lookup_table[i]) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int parse(struct ParserSelf* self, const char* statementRequest) {
     struct StatementTokens token = {
             "",
             {
-                "","", "", "", "",
-                "","", "", "", ""
+                    "", "", "", "", "",
+                    "", "", "", "", ""
             }
     };
     strcpy(self->results, "");
 
     Tokenize(statementRequest, &token);
 
-    // CREATE TABLE
-    if (strlen(token.command) > 0 && strcmp(token.command, CREATE_STATEMENT) == 0) {
-        self->numTableColumns = numTableColumns(statementRequest);
-        statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
-        // loop to determine number of commas/entries in CREATE TABLE statement
-        executeCreateTableStatement(self, &token); // TODO: max of 10 columns, produce error message if more attempted
-        strcpy(self->results, "success\n");
-        return 0;
+    typedef struct {
+        char *key[7];
+    } t_symstruct;
+
+    if (strlen(token.command) < 1) {
+        return -1; // error
     }
-    // INSERT INTO
-    if (strlen(token.command) > 0 && strcmp(token.command, INSERT_STATEMENT) == 0) {
-        statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
-        executeInsertStatement(self, &token);
-        strcpy(self->results, "success\n");
-        return 0;
-    }
-    // SELECT
-    if (strlen(token.command) > 0 && strcmp(token.command, SELECT_STATEMENT) == 0) {
-        // TODO: all SELECT statements are SELECT *, add statements into it
-        // statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
-        sprintf(self->results, "table\n");
-        // row headers
-        executeSelectTableHeaders(self);
-        executeSelectTableValues(self);
-        return 0; // retrieve columnHeader with SELECT
+
+    switch (hashFunction(token.command)) {
+        // CREATE TABLE
+        case 0:
+            self->numTableColumns = numTableColumns(statementRequest);
+            statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
+            // loop to determine number of commas/entries in CREATE TABLE statement
+            executeCreateTableStatement(self,&token); // TODO: max of 10 columns, produce error message if more attempted
+            strcpy(self->results, "success\n");
+            return 0;
+        case 1:
+            // INSERT INTO
+            statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
+            executeInsertStatement(self, &token);
+            strcpy(self->results, "success\n");
+            return 0;
+        case 2:
+            // SELECT
+            // TODO: all SELECT statements are SELECT *, add statements into it
+            // statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
+            sprintf(self->results, "table\n");
+            // row headers
+            executeSelectTableHeaders(self);
+            executeSelectTableValues(self);
+            return 0; // retrieve columnHeader with SELECT
     }
     return 1; // error, should have attempted at least one valid statement
 }
@@ -92,7 +113,9 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 // String Helper Functions
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numTableColumns; i++) {
-        strncpy(self->columnHeaders[i], &token->tokens[i][0], strlen(token->tokens[i])); // store this as columnHeader
+        strncpy(self->columnHeaders[i], token->tokens[i], sizeof(token->tokens[i]));
+        printf("copied str: %s", self->columnHeaders[i]);
+        printf("token str: %s", token->tokens[i]);
     }
 }
 void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token) {
