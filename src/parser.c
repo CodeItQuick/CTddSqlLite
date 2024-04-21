@@ -57,15 +57,16 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
             return 0;
         case 2:
             // SELECT
-            selectStatementTokenValues(token.tokens, statementRequest, self->numTableColumns);
             sprintf(self->results, "table\n");
             // row headers
-            if (findString(0, '*', statementRequest) < strlen(statementRequest)) {
+            if (findString(0, '*', statementRequest)) {
                 executeSelectAllTableHeaders(self);
             } else {
                 int selectedColumns = numTableColumns(statementRequest);
                 printf("num columns: %d", selectedColumns);
-                executeSelectTableHeaders(self, token.tokens, selectedColumns);
+                char tokens[][50] = { "", "", "" };
+                selectStatementTokenValues(tokens, statementRequest, selectedColumns);
+                executeSelectTableHeaders(self, tokens, selectedColumns);
             }
             executeSelectTableValues(self);
             return 0; // retrieve columnHeader with SELECT
@@ -90,6 +91,10 @@ int findString(int pos, const char charStr, const char searchString[])
         }
         c++;
     }
+    // not found, return 0
+    if (strlen(searchString) == c) {
+        return 0;
+    }
 
     return pos + c;
 }
@@ -97,6 +102,9 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 {
     int startIdx = findString(0, '(', inputString) + 1;
     int endIdx = findString(startIdx, ' ', inputString);
+    if (endIdx == 0) {
+        endIdx = strlen(inputString);
+    }
 
     int stringLength = endIdx - startIdx;
     strncpy(self[0], &inputString[startIdx], stringLength);
@@ -104,6 +112,9 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
     for (int i = 1; i < selfArraySize; i++) {
         int commaIdx = findString(startIdx, ',', inputString) + 1;
         int commaSpaceIdx = findString(commaIdx, ' ', inputString);
+        if (commaSpaceIdx == 0) {
+            commaSpaceIdx = strlen(inputString);
+        }
         strncpy(self[i], &inputString[commaIdx], commaSpaceIdx - commaIdx);
         self[i][commaSpaceIdx - commaIdx + 1] = '\0';
         startIdx = commaIdx;
@@ -117,7 +128,7 @@ int selectStatementTokenValues(char self[][50], const char* inputString, int sel
     for (int i = 0; i < selfArraySize; i++) {
         int commaDelimiterIdx = findString(startIdx + 1, ',', inputString);
         int chooseNextDelimiterIdx = 0;
-        if (commaDelimiterIdx < strlen(inputString)) {
+        if (commaDelimiterIdx) {
             chooseNextDelimiterIdx = commaDelimiterIdx;
         }
         else {
@@ -182,8 +193,8 @@ void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][50
     }
 }
 int numTableColumns(const char *printedString) {
-    int startIdx = 0, commaIdx = 0, numEntries = 0;
-    while(startIdx < strlen(printedString)) {
+    int startIdx = 1, commaIdx = 0, numEntries = 0;
+    while(startIdx != 0) {
         startIdx = findString(commaIdx + 1, ',', printedString);
         commaIdx = startIdx;
         numEntries++;
