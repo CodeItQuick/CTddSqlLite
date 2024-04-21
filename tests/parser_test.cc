@@ -133,8 +133,7 @@ TEST(ParseAssertions,SelectRetrievesThreeColumnLabel) {
 
     EXPECT_STREQ("table\nID\tUsername\tAge", self.results);
 }
-// TODO: next behaviour, add SELECT ID FROM default;
-TEST(ParseAssertions,SelectRetrievesSelectedColumnLabel) {
+TEST(ParseAssertions,SelectRetrievesIdColumnLabel) {
     char createTableStatement[] = "CREATE TABLE default (ID int,Username varchar,Age int);";
 
     char columnHeader[10][50] = {
@@ -152,6 +151,44 @@ TEST(ParseAssertions,SelectRetrievesSelectedColumnLabel) {
     parse(&self, select);
 
     EXPECT_STREQ("table\nID", self.results);
+}
+TEST(ParseAssertions,SelectRetrievesIdAgeColumnLabel) {
+    char createTableStatement[] = "CREATE TABLE default (ID int,Username varchar,Age int);";
+
+    char columnHeader[10][50] = {
+            "", "", "", "", "",
+            "", "", "", "", ""
+            };
+    struct ParserSelf self = { "",
+                               columnHeader[0], columnHeader[1], columnHeader[2],
+                               columnHeader[3], columnHeader[4], columnHeader[5],
+                               columnHeader[6], columnHeader[7], columnHeader[8],
+                               columnHeader[9] };
+    parse(&self, createTableStatement);
+    char select[] = "SELECT ID,Age FROM default;";
+
+    parse(&self, select);
+
+    EXPECT_STREQ("table\nID\tAge", self.results);
+}
+TEST(ParseAssertions,SelectRetrievesIdUsernameAgeColumnLabel) {
+    char createTableStatement[] = "CREATE TABLE default (ID int,Username varchar,Age int);";
+
+    char columnHeader[10][50] = {
+            "", "", "", "", "",
+            "", "", "", "", ""
+            };
+    struct ParserSelf self = { "",
+                               columnHeader[0], columnHeader[1], columnHeader[2],
+                               columnHeader[3], columnHeader[4], columnHeader[5],
+                               columnHeader[6], columnHeader[7], columnHeader[8],
+                               columnHeader[9] };
+    parse(&self, createTableStatement);
+    char select[] = "SELECT ID,Username,Age FROM default;";
+
+    parse(&self, select);
+
+    EXPECT_STREQ("table\nID\tUsername\tAge", self.results);
 }
 TEST(ParseAssertions,InsertIntoStoresData) {
     char createTable[] = "CREATE TABLE default (ID int);";

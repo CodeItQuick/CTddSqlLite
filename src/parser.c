@@ -57,16 +57,15 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
             return 0;
         case 2:
             // SELECT
-            // TODO: all SELECT statements are SELECT *, add statements into it
-//            char selectColumns[][50];
             selectStatementTokenValues(token.tokens, statementRequest, self->numTableColumns);
-//            sprintf("tokens: %s", &token.tokens[0][0]);
             sprintf(self->results, "table\n");
             // row headers
             if (findString(0, '*', statementRequest) < strlen(statementRequest)) {
                 executeSelectAllTableHeaders(self);
             } else {
-                executeSelectTableHeaders(self, token.tokens, 1);
+                int selectedColumns = numTableColumns(statementRequest);
+                printf("num columns: %d", selectedColumns);
+                executeSelectTableHeaders(self, token.tokens, selectedColumns);
             }
             executeSelectTableValues(self);
             return 0; // retrieve columnHeader with SELECT
@@ -114,21 +113,19 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 }
 int selectStatementTokenValues(char self[][50], const char* inputString, int selfArraySize)
 {
-    int startIdx = findString(0, ' ', inputString) + 1;
-    int endIdx = findString(startIdx, ' ', inputString);
-    int commaIdx = findString(0, ',', inputString);
-    if (commaIdx < strlen(inputString)) {
-        endIdx = commaIdx;
-    }
-    int stringLength = endIdx - startIdx;
-    strncpy(self[0], &inputString[startIdx], stringLength);
-
-    for (int i = 1; i < selfArraySize; i++) {
-        commaIdx = findString(startIdx, ',', inputString) + 1;
-        int commaSpaceIdx = findString(commaIdx, ' ', inputString);
-        strncpy(self[i], &inputString[commaIdx], commaSpaceIdx - commaIdx);
-        self[i][commaSpaceIdx - commaIdx + 1] = '\0';
-        startIdx = commaIdx;
+    int startIdx = findString(0, ' ', inputString);
+    for (int i = 0; i < selfArraySize; i++) {
+        int commaDelimiterIdx = findString(startIdx + 1, ',', inputString);
+        int chooseNextDelimiterIdx = 0;
+        if (commaDelimiterIdx < strlen(inputString)) {
+            chooseNextDelimiterIdx = commaDelimiterIdx;
+        }
+        else {
+            chooseNextDelimiterIdx = findString(startIdx + 1, ' ', inputString);
+        }
+        strncpy(self[i], &inputString[startIdx + 1],  chooseNextDelimiterIdx - (startIdx + 1));
+        self[i][chooseNextDelimiterIdx - startIdx] = '\0';
+        startIdx = chooseNextDelimiterIdx;
     }
 
     return 0;
