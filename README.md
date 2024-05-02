@@ -1,10 +1,13 @@
 # Reason -> Who, Why, How, What
 
-- Learn C Development and DB Performance
-1. WHO: Developers (Testing View)
+- Write In Memory Testable DB Project
+1. WHO: Developers (Performance View)
     1. WHY: Must be swappable for tests (Db Concepts)
         1. HOW: SQL input is the same as SQL server
         2. HOW: Can support multiple versions of SQL Server DB/Azure
+    2. WHY: Performance is not a priority/important as its in memory
+    3. WHY: Must be usable in dotnet projects
+        1. HOW: Adapters in code available
 2. WHO: Me
     1. WHY: Learn SqlServer Database Concepts (swap for tests)
         1. Learn about the underlying types I need to support
