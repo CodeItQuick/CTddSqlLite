@@ -24,7 +24,7 @@
        1. HOW: Proper Logging
        2. HOW: Proper Testing for correctness and performance
     3. WHY: Database must have minimal types
-       4. HOW: Limit to varchar(255) and ints
+       1. HOW: Limit to varchar(255) and ints
 2. WHO: Me
     1. WHY: Learn About C Programming
        1. HOW: Use Pluralsight and Udemy
