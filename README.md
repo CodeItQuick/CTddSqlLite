@@ -7,11 +7,11 @@
         2. HOW: Can support multiple versions of SQL Server DB/Azure
 2. WHO: Me
     1. WHY: Learn SqlServer Database Concepts (swap for tests)
-        1. Learn about the underlying types I need to support
-        2. How the database takes input with various queries
-        3. What are the typical queries?
-        4. How to store/retrieve/construct the database
-        5. Look at DB from an input/black box perspective
+        1. HOW: Learn about the underlying types I need to support
+        2. HOW: How the database takes input with various queries
+        3. HOW: What are the typical queries?
+        4. HOW: How to store/retrieve/construct the database
+        5. HOW: Look at DB from an input/black box perspective
 
 # C Project: Write In Performance C DB Project
 1. WHO: Developers (Performance View)
