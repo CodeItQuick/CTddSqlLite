@@ -31,6 +31,14 @@
        2. HOW: Books - C Programming Language
        3. HOW: Mentoring - Doug
 
+# C Project: Write an Interpreter/Compiler in C for C#/Java?!
+1. WHO: Developers (Functional View)
+   1. Build simplified tokenizer and parser
+   2. Good testing for correctness
+3. WHO: Me 
+    1. WHY: Learn assembly and the underlying layer
+    2. WHY: Learn how garbage collection works in a higher level language?
+   
 # Why?
 
 Learning new concepts and the underlying technology layer.
