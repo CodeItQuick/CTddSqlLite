@@ -13,7 +13,7 @@
         4. How to store/retrieve/construct the database
         5. Look at DB from an input/black box perspective
 
-# C Project: Write In Memory Testable DB Project
+# C Project: Write In Performance C DB Project
 1. WHO: Developers (Performance View)
     1. WHY: Database must be performant
        1. HOW: manage memory properly for different requests
