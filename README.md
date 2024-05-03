@@ -13,7 +13,7 @@
         4. HOW: How to store/retrieve/construct the database
         5. HOW: Look at DB from an input/black box perspective
 
-# C Project: Write In Performance C DB Project
+# C Project: Write Performance C DB Project
 1. WHO: Developers (Performance View)
     1. WHY: Database must be performant
        1. HOW: manage memory properly for different requests
@@ -24,7 +24,7 @@
        1. HOW: Proper Logging
        2. HOW: Proper Testing for correctness and performance
     3. WHY: Database must have minimal types
-       1. HOW: Limit to varchar(255) and ints
+       1. HOW: Limit to varchar(255) and ints, maybe uuid?
 2. WHO: Me
     1. WHY: Learn About C Programming
        1. HOW: Use Pluralsight and Udemy
