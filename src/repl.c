@@ -4,6 +4,6 @@
 
 #include "repl.h"
 
-char* repl(char** commands) {
+char* command_reader(char** commands) {
     return "CREATE TABLE default (ID int);";
 }

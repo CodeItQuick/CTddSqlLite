@@ -10,7 +10,7 @@ TEST(ReplTests, CanReceiveInput) {
             "CREATE TABLE default (ID int);"
     };
 
-    char *command = repl(commands);
+    char *command = command_reader(commands);
 
     EXPECT_STREQ("CREATE TABLE default (ID int);", command);
 }
