@@ -13,12 +13,12 @@ struct ParserSelf {
 
 struct StatementTokens {
     char command[7];
-    char tokens[10][50];
+    char tokens[10][10];
 };
 
-int findString(int pos, const char charStr, const char* searchString);
-int statementTokenValues(char self[][50], const char* inputString, int selfArraySize);
-int selectStatementTokenValues(char self[][50], const char* inputString, int selfArraySize);
+int findString(int pos, char charStr, const char* searchString);
+int statementTokenValues(char self[][10], const char* inputString, int selfArraySize);
+int selectStatementTokenValues(char self[][10], const char* inputString, int selfArraySize);
 int parse(struct ParserSelf* self, const char* statementRequest);
 
 int numTableColumns(const char *printedString);
@@ -28,7 +28,7 @@ void executeCreateTableStatement(const struct ParserSelf *self, struct Statement
 void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token);
 
 void executeSelectAllTableHeaders(struct ParserSelf *self);
-void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][50], int tableHeadersSize);
+void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][10], int tableHeadersSize);
 
 void executeSelectTableValues(struct ParserSelf *self);
 

@@ -64,7 +64,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
             } else {
                 int selectedColumns = numTableColumns(statementRequest);
                 printf("num columns: %d", selectedColumns);
-                char tokens[][50] = { "", "", "" };
+                char tokens[][10] = { "", "", "" };
                 selectStatementTokenValues(tokens, statementRequest, selectedColumns);
                 executeSelectTableHeaders(self, tokens, selectedColumns);
             }
@@ -98,7 +98,7 @@ int findString(int pos, const char charStr, const char searchString[])
 
     return pos + c;
 }
-int statementTokenValues(char self[][50], const char* inputString, int selfArraySize)
+int statementTokenValues(char self[][10], const char* inputString, int selfArraySize)
 {
     int startIdx = findString(0, '(', inputString) + 1;
     int endIdx = findString(startIdx, ' ', inputString);
@@ -122,12 +122,12 @@ int statementTokenValues(char self[][50], const char* inputString, int selfArray
 
     return 0;
 }
-int selectStatementTokenValues(char self[][50], const char* inputString, int selfArraySize)
+int selectStatementTokenValues(char self[][10], const char* inputString, int selfArraySize)
 {
     int startIdx = findString(0, ' ', inputString);
     for (int i = 0; i < selfArraySize; i++) {
         int commaDelimiterIdx = findString(startIdx + 1, ',', inputString);
-        int chooseNextDelimiterIdx = 0;
+        int chooseNextDelimiterIdx;
         if (commaDelimiterIdx) {
             chooseNextDelimiterIdx = commaDelimiterIdx;
         }
@@ -144,7 +144,7 @@ int selectStatementTokenValues(char self[][50], const char* inputString, int sel
 // String Helper Functions
 void executeCreateTableStatement(const struct ParserSelf *self, struct StatementTokens *token) {
     for (int i = 0; i < self->numTableColumns; i++) {
-        strncpy(self->columnHeaders[i], token->tokens[i], sizeof(token->tokens[i]));
+        strcpy(self->columnHeaders[i], token->tokens[i]);
     }
 }
 void executeInsertStatement(struct ParserSelf *self, struct StatementTokens *token) {
@@ -181,7 +181,7 @@ void executeSelectAllTableHeaders(struct ParserSelf *self) {
         strcat(self->results, currentRow);
     }
 }
-void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][50], int tableHeadersSize) {
+void executeSelectTableHeaders(struct ParserSelf *self, char tableHeaders[10][10], int tableHeadersSize) {
     for(int i = 0; i < tableHeadersSize; i++) {
 
         char* currentRow = tableHeaders[i];
