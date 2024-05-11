@@ -16,7 +16,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 add_library(
-        print_ln
+        parser
         src/parser.c
         src/parser.h
 )
@@ -30,16 +30,16 @@ add_executable(
         src/main.c
 )
 add_executable(
-        hello_test
+        parser_test
         tests/parser_test.cc
 )
 target_link_libraries(
         main
-        print_ln
+        parser
 )
 target_link_libraries(
-        hello_test
-        print_ln
+        parser_test
+        parser
         GTest::gtest_main
 )
 
@@ -53,5 +53,5 @@ target_link_libraries(
         GTest::gtest_main
 )
 include(GoogleTest)
-gtest_discover_tests(hello_test)
+gtest_discover_tests(parser_test)
 gtest_discover_tests(repl_test)
