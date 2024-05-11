@@ -38,5 +38,14 @@ target_link_libraries(
         GTest::gtest_main
 )
 
+add_executable(
+        repl_test
+        tests/repl_test.cc
+)
+target_link_libraries(
+        repl_test
+        GTest::gtest_main
+)
 include(GoogleTest)
 gtest_discover_tests(hello_test)
+gtest_discover_tests(repl_test)
