@@ -16,7 +16,7 @@ struct StatementTokens {
     char tokens[10][10];
 };
 
-int findString(int pos, char charStr, const char* searchString);
+int charPositionInString(int initial_position, char findChar, const char* searchString);
 int statementTokenValues(char self[][10], const char* inputString, int selfArraySize);
 int selectStatementTokenValues(char self[][10], const char* inputString, int selfArraySize);
 int parse(struct ParserSelf* self, const char* statementRequest);
