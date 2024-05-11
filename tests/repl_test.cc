@@ -6,5 +6,11 @@
 
 TEST(ReplTests, CanReceiveInput) {
 
-    EXPECT_TRUE(true);
+    char *commands[] = {
+            "CREATE TABLE default (ID int);"
+    };
+
+    char *command = repl(commands);
+
+    EXPECT_STREQ("CREATE TABLE default (ID int);", command);
 }

@@ -20,6 +20,11 @@ add_library(
         src/parser.c
         src/parser.h
 )
+add_library(
+        repl
+        src/repl.c
+        src/repl.h
+)
 add_executable(
         main
         src/main.c
@@ -44,6 +49,7 @@ add_executable(
 )
 target_link_libraries(
         repl_test
+        repl
         GTest::gtest_main
 )
 include(GoogleTest)
