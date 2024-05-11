@@ -22,8 +22,8 @@ add_library(
 )
 add_library(
         repl
-        src/repl.c
-        src/repl.h
+        src/command_reader.c
+        src/command_reader.h
 )
 add_executable(
         main
@@ -45,7 +45,7 @@ target_link_libraries(
 
 add_executable(
         repl_test
-        tests/repl_test.cc
+        tests/command_reader_test.cc
 )
 target_link_libraries(
         repl_test

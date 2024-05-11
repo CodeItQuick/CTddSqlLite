@@ -5,7 +5,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#include "../src/repl.h"
+#include "../src/command_reader.h"
 #ifdef __cplusplus
 }
 #endif
