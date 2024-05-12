@@ -8,13 +8,20 @@
 
 int repl(struct replCommands commands, struct ParserSelf *self) {
 
-    int result = parse(self, commands.commands[0]);
+    // first input
+    parse(self, commands.commands[0]);
     char strResults[50] = "";
     strcpy(strResults, self->results);
-    if (strlen(commands.commands[1])) {
-        parse(self, commands.commands[1]);
-        strcat(strResults, self->results);
-        strcpy(self->results, strResults);
+
+    // remaining inputs, up to 5 total
+    for (int i = 1; i < 5; ++i) {
+        if (strlen(commands.commands[i])) {
+            parse(self, commands.commands[1]);
+            strcat(strResults, self->results);
+            strcat(strResults, "\n");
+            strcpy(self->results, strResults);
+        }
     }
-    return result;
+
+    return 0;
 }
