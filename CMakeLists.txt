@@ -21,9 +21,14 @@ add_library(
         src/parser.h
 )
 add_library(
-        repl
+        command_reader
         src/command_reader.c
         src/command_reader.h
+)
+add_library(
+        repl
+        src/repl.c
+        src/repl.h
 )
 add_executable(
         main
@@ -36,6 +41,8 @@ add_executable(
 target_link_libraries(
         main
         parser
+        command_reader
+        repl
 )
 target_link_libraries(
         parser_test
@@ -44,14 +51,20 @@ target_link_libraries(
 )
 
 add_executable(
-        repl_test
-        tests/command_reader_test.cc
+        fake_command_reader_test
+        tests/fake_command_reader_test.cc
+)
+add_library(
+        fake_command_reader
+        tests/fake_command_reader.cc
+        tests/fake_command_reader.h
 )
 target_link_libraries(
-        repl_test
+        fake_command_reader_test
+        fake_command_reader
         repl
         GTest::gtest_main
 )
 include(GoogleTest)
 gtest_discover_tests(parser_test)
-gtest_discover_tests(repl_test)
+gtest_discover_tests(fake_command_reader_test)

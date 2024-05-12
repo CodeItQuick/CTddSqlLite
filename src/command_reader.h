@@ -6,6 +6,6 @@
 #define CTDDSQLLITE_REPL_H
 
 
-char* command_reader(char** commands);
+char* commands_reader(char** commands);
 
 #endif //CTDDSQLLITE_REPL_H
