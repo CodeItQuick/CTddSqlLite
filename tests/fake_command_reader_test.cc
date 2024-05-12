@@ -3,7 +3,7 @@
 //
 #include <gtest/gtest.h>
 #include "fake_command_reader.cc"
-#include "../src/repl.h"
+#include "fake_command_reader_test.h"
 
 TEST(CommandTests, CanReceiveInput) {
 
@@ -45,13 +45,17 @@ TEST(CommandTests, CanReplayThreeInputs) {
     EXPECT_STREQ("SELECT * FROM default;", commandTwo);
     EXPECT_STREQ("SELECT * FROM defaultTwo;", commandThree);
 }
-//TEST(ReplTests, CanExecuteAnInput) {
-//
-//    struct replCommands commands = {
-//            "CREATE TABLE default (ID int);"
-//    };
-//
-//    int success = repl(commands);
-//
-//    EXPECT_EQ(0, success);
-//}
+TEST(ReplTests, CanExecuteAnInput) {
+
+    struct replCommands commands = {
+            "CREATE TABLE default (ID int);",
+            "",
+            "",
+            "",
+            "",
+    };
+
+    int success = repl(commands);
+
+    EXPECT_EQ(0, success);
+}
