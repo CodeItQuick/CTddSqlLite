@@ -4,8 +4,10 @@
 
 #pragma once
 
+#include "parser.h"
+
 struct replCommands {
     char commands[5][40];
 };
 
-int repl(struct replCommands commands);
+int repl(struct replCommands commands, struct ParserSelf *self);
