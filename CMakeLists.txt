@@ -63,6 +63,7 @@ target_link_libraries(
         fake_command_reader_test
         fake_command_reader
         repl
+        parser
         GTest::gtest_main
 )
 include(GoogleTest)

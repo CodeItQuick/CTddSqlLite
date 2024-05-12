@@ -6,6 +6,7 @@
 extern "C" {
 #endif
 #include "../src/repl.h"
+#include "../src/parser.h"
 #ifdef __cplusplus
 }
 #endif
