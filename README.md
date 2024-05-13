@@ -1,3 +1,6 @@
+# TODO
+1. The repl is not properly tested right now
+
 # Reason -> Who, Why, How, What
 
 # C# Project: Write In Memory Testable DB Project
