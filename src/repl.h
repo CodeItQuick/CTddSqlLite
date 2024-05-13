@@ -11,3 +11,4 @@ struct replCommands {
 };
 
 int repl(struct replCommands commands, struct ParserSelf *self);
+void executeCommand(struct replCommands *commands, struct ParserSelf *self);

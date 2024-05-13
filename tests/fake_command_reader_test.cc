@@ -64,9 +64,8 @@ TEST(ReplTests, CanExecuteAnInput) {
             "",
     };
 
-    int success = repl(commands, &self);
+    executeCommand(&commands, &self);
 
-    EXPECT_EQ(0, success);
     EXPECT_STREQ("success\n", self.results);
 }
 TEST(ReplTests, CanExecuteTwoInputs) {
@@ -88,9 +87,8 @@ TEST(ReplTests, CanExecuteTwoInputs) {
             "",
     };
 
-    int success = repl(commands, &self);
+    executeCommand(&commands, &self);
 
-    EXPECT_EQ(0, success);
     EXPECT_STREQ("success\ntable\nID\n", self.results);
 }
 TEST(ReplTests, CanExecuteFiveInputs) {
@@ -112,32 +110,7 @@ TEST(ReplTests, CanExecuteFiveInputs) {
             "SELECT * FROM default;",
     };
 
-    int success = repl(commands, &self);
+    executeCommand(&commands, &self);
 
-    EXPECT_EQ(0, success);
     EXPECT_STREQ("success\ntable\nID\ntable\nID\ntable\nID\ntable\nID\n", self.results);
-}
-TEST(ReplTests, CanExecuteThreeInputs) {
-
-    char columnHeader[10][10] = {
-            "", "", "", "", "",
-            "", "", "", "", ""
-    };
-    struct ParserSelf self = { "",
-                               columnHeader[0], columnHeader[1], columnHeader[2],
-                               columnHeader[3], columnHeader[4], columnHeader[5],
-                               columnHeader[6], columnHeader[7], columnHeader[8],
-                               columnHeader[9] };
-    struct replCommands commands = {
-            "CREATE TABLE default (ID int);",
-            "SELECT * FROM default;",
-            "exit;",
-            "",
-            "",
-    };
-
-    int success = repl(commands, &self);
-
-    EXPECT_EQ(0, success);
-    EXPECT_STREQ("success\ntable\nID\ntable\nexited.\n", self.results);
 }

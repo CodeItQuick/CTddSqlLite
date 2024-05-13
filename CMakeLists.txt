@@ -40,9 +40,9 @@ add_executable(
 )
 target_link_libraries(
         main
+        repl
         parser
         command_reader
-        repl
 )
 target_link_libraries(
         parser_test

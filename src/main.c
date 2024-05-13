@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "parser.h"
-
+#include "repl.h"
 
 
 int main() {
@@ -13,15 +13,8 @@ int main() {
                                columnHeader[3], columnHeader[4], columnHeader[5],
                                columnHeader[6], columnHeader[7], columnHeader[8],
                                columnHeader[9] };
-    char createTable[] = "CREATE TABLE default (ID int,Age int);\n";
-    parse(&self, createTable);
-    printf("%s", self.results);
-    char insertValues[] = "INSERT INTO default VALUES (1,17);\n";
-    parse(&self, insertValues);
-    printf("%s", self.results);
-    char selectStatement[] = "SELECT * FROM default;";
-    parse(&self, selectStatement);
-    printf("%s", self.results);
+    struct replCommands replCommands = {};
+    repl(replCommands, &self);
     return 0;
 }
 
