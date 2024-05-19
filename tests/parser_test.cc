@@ -150,7 +150,7 @@ TEST(ParseAssertions,SelectRetrievesIdColumnLabel) {
 
     parse(&self, select);
 
-    EXPECT_STREQ("table\nID", self.results);
+    EXPECT_STREQ("table\nID\n", self.results);
 }
 TEST(ParseAssertions,SelectRetrievesIdAgeColumnLabel) {
     char createTableStatement[] = "CREATE TABLE default (ID int,Username varchar,Age int);";
@@ -169,7 +169,7 @@ TEST(ParseAssertions,SelectRetrievesIdAgeColumnLabel) {
 
     parse(&self, select);
 
-    EXPECT_STREQ("table\nID\tAge", self.results);
+    EXPECT_STREQ("table\nID\tAge\n", self.results);
 }
 TEST(ParseAssertions,SelectRetrievesIdUsernameAgeColumnLabel) {
     char createTableStatement[] = "CREATE TABLE default (ID int,Username varchar,Age int);";
@@ -188,7 +188,7 @@ TEST(ParseAssertions,SelectRetrievesIdUsernameAgeColumnLabel) {
 
     parse(&self, select);
 
-    EXPECT_STREQ("table\nID\tUsername\tAge", self.results);
+    EXPECT_STREQ("table\nID\tUsername\tAge\n", self.results);
 }
 TEST(ParseAssertions,InsertIntoStoresData) {
     char createTable[] = "CREATE TABLE default (ID int);";

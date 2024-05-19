@@ -16,10 +16,12 @@ int repl(struct replCommands commands, struct ParserSelf *self) {
     do {
         if (strlen(commands.commands[0]) == 0) {
             fgets(commandInput, sizeof commandInput, stdin);
-            printf("command input: %s", commandInput);
+            parse(self, commandInput);
+            printf("%s", self->results);
         }
         if (strstr(commandInput, "exit;") != 0 ) {
             executeCommand(&commands, self);
+            printf("exiting");
         }
     } while (strstr(commandInput, "exit;") == 0 );
 

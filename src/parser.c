@@ -24,6 +24,13 @@ int hashFunction(char *token) {
     return -1;
 }
 
+int createTableFunction(struct ParserSelf* self, const char* statementRequest, struct StatementTokens token) {
+    self->numTableColumns = numTableColumns(statementRequest);
+    statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
+    // loop to determine number of commas/entries in CREATE TABLE statement
+    executeCreateTableStatement(self,&token); // TODO: max of 10 columns, produce error message if more attempted
+    strcpy(self->results, "success\n");
+}
 int parse(struct ParserSelf* self, const char* statementRequest) {
     struct StatementTokens token = {
             "",
@@ -43,11 +50,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
     switch (hashFunction(token.command)) {
         // CREATE TABLE
         case 0:
-            self->numTableColumns = numTableColumns(statementRequest);
-            statementTokenValues(token.tokens, statementRequest, self->numTableColumns);
-            // loop to determine number of commas/entries in CREATE TABLE statement
-            executeCreateTableStatement(self,&token); // TODO: max of 10 columns, produce error message if more attempted
-            strcpy(self->results, "success\n");
+            createTableFunction(self, statementRequest, token);
             return 0;
         case 1:
             // INSERT INTO
@@ -67,6 +70,7 @@ int parse(struct ParserSelf* self, const char* statementRequest) {
                 char tokens[][10] = { "", "", "" };
                 selectStatementTokenValues(tokens, statementRequest, selectedColumns);
                 executeSelectTableHeaders(self, tokens, selectedColumns);
+                strcat(self->results, "\n");
             }
             executeSelectTableValues(self);
             return 0; // retrieve columnHeader with SELECT
